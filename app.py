@@ -6,7 +6,7 @@ import numpy as np
 st.title("🌌 FITS 파일 분석기") 
 st.write("FITS 파일을 업로드하여 이미지와 헤더 정보를 확인하세요.")
 
-uploaded_file = st.file_uploader("FITS 파일 선택", type=["fits", "fit"])
+uploaded_file = st.file_uploader("FITS 파일 선택", type=["fits", "fit", "fz", "fits.fz"])
 
 if uploaded_file is not None:
     try:
