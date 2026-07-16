@@ -12,7 +12,25 @@ if uploaded_file is not None:
     try:
         with fits.open(uploaded_file) as hdul:
             header = hdul[0].header
-            data = hdul[0].data
+            # 기존의 hdul[0].data 부분을 아래 코드로 교체하세요
+with fits.open(uploaded_file) as hdul:
+    # 1. 데이터가 있는 HDU를 자동으로 찾기
+    data = None
+    header = None
+    
+    for hdu in hdul:
+        if hdu.data is not None:
+            data = hdu.data
+            header = hdu.header
+            break # 데이터가 있는 곳을 찾으면 멈춤
+
+    if data is None:
+        st.error("이 파일에서 이미지 데이터를 찾을 수 없습니다.")
+    else:
+        # 이제 아래에 시각화 로직을 그대로 사용하면 됩니다
+        st.subheader("📊 이미지 정보")
+        st.write(f"- 이미지 크기: {data.shape}")
+        # ... (나머지 코드 생략)
 
             st.subheader("📊 이미지 정보")
             st.write(f"- 이미지 크기: {data.shape}")
