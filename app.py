@@ -9,12 +9,12 @@ st.set_page_config(page_title="천문 데이터 분석기", layout="wide")
 st.title("🌌 천문 데이터 분석기 (FITS/FZ)")
 st.write("FITS 또는 FZ 파일을 업로드하여 관측 데이터를 분석하고 이미지를 시각화합니다.")
 
-# 2. 파일 업로더 (fz 포함)
+# 2. 파일 업로더
 uploaded_file = st.file_uploader("FITS 또는 FZ 파일을 선택하세요", type=["fits", "fit", "fz", "fits.fz"])
 
 if uploaded_file is not None:
     try:
-        # 파일 열기 (try-except로 오류 방지)
+        # 파일 열기
         with fits.open(uploaded_file) as hdul:
             # 이미지 데이터가 있는 HDU 자동 탐색
             data = None
@@ -34,13 +34,18 @@ if uploaded_file is not None:
                 with col1:
                     st.subheader("🖼️ 이미지 시각화")
                     # 이미지 밝기 정규화 (로그 스케일 변환)
-                    # 데이터가 0보다 작을 수 있는 경우를 대비해 처리
                     safe_data = data - np.nanmin(data)
                     norm_data = np.log1p(safe_data)
                     
                     fig, ax = plt.subplots(figsize=(8, 8))
                     im = ax.imshow(norm_data, cmap='magma', origin='lower')
-                    plt.colorbar(im, ax=ax)
+                    
+                    # 단위 추가 (축 라벨)
+                    ax.set_xlabel("X Axis (pixels)")
+                    ax.set_ylabel("Y Axis (pixels)")
+                    ax.set_title("Observed Image")
+                    
+                    plt.colorbar(im, ax=ax, label='Intensity (log scale)')
                     st.pyplot(fig)
                 
                 with col2:
